@@ -1,20 +1,18 @@
-steps:
-- name: 'gcr.io/cloudbuild/docker'
-  args:
-  - 'build'
-  - '-t'
-  - 'gcr.io/$PROJECT_ID/flask-app'
-  - '.'
-- name: 'gcr.io/cloudbuild/docker'
-  args:
-  - 'push'
-  - 'gcr.io/$PROJECT_ID/flask-app'
-- name: 'gcr.io/cloudbuild/docker'
-  args:
-  - 'run'
-  - '-d'
-  - '-p'
-  - '8080:8080'
-  - '--name'
-  - 'flask-app'
-  - 'gcr.io/$PROJECT_ID/flask-app'
+# Use the official Python image
+FROM python:3.10-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code
+COPY . .
+
+# Expose the port for the application
+EXPOSE 8080
+
+# Run the app with Gunicorn
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]
