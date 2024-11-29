@@ -1,0 +1,20 @@
+steps:
+- name: 'gcr.io/cloudbuild/docker'
+  args:
+  - 'build'
+  - '-t'
+  - 'gcr.io/$PROJECT_ID/flask-app'
+  - '.'
+- name: 'gcr.io/cloudbuild/docker'
+  args:
+  - 'push'
+  - 'gcr.io/$PROJECT_ID/flask-app'
+- name: 'gcr.io/cloudbuild/docker'
+  args:
+  - 'run'
+  - '-d'
+  - '-p'
+  - '8080:8080'
+  - '--name'
+  - 'flask-app'
+  - 'gcr.io/$PROJECT_ID/flask-app'
